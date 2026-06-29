@@ -33,7 +33,7 @@ An AI digital twin that answers **professional questions** based on a real CV an
 
 ## Model
 
-Default model: `anthropic/claude-3.5-haiku` via OpenRouter.
+Default model: `qwen/qwen3.6-plus` via OpenRouter (free tier).
 Change `DEFAULT_MODEL` in `twin.py` to any [OpenRouter model slug](https://openrouter.ai/models).
 
 ## Professional-only guardrail
