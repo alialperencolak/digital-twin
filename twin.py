@@ -87,7 +87,7 @@ def chat_stream(history: list[dict], model: str = DEFAULT_MODEL):
         temperature=0.7,
         extra_headers={
             "HTTP-Referer": "https://huggingface.co",
-            "X-Title": f"Digital Twin — {TWIN_NAME}",
+            "X-Title": f"Digital Twin - {TWIN_NAME}",
         },
     )
     for chunk in stream:
