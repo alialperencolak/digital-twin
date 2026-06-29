@@ -304,16 +304,18 @@ export default function Home() {
 /* ── Sub-components ─────────────────────────────────────────── */
 
 function Avatar({ size }: { size: 'xs' | 'sm' | 'lg' }) {
-  const cls = {
-    xs: 'w-7 h-7 text-xs',
-    sm: 'w-9 h-9 text-sm',
-    lg: 'w-20 h-20 text-2xl',
-  }[size];
+  const dim = { xs: 28, sm: 36, lg: 80 }[size];
+  const cls = { xs: 'w-7 h-7', sm: 'w-9 h-9', lg: 'w-20 h-20' }[size];
   return (
-    <div
-      className={`${cls} rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold select-none shrink-0`}
-    >
-      AC
+    <div className={`${cls} rounded-full overflow-hidden shrink-0 ring-2 ring-white shadow-sm`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/avatar.png"
+        alt="Ali Alperen Colak"
+        width={dim}
+        height={dim}
+        className="w-full h-full object-cover"
+      />
     </div>
   );
 }
