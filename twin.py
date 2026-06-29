@@ -7,7 +7,7 @@ import openai
 CV_PATH = Path("data/cv.md")
 QA_PATH = Path("data/qa.json")
 
-DEFAULT_MODEL = "anthropic/claude-3.5-sonnet"
+DEFAULT_MODEL = "anthropic/claude-sonnet-latest"
 
 TWIN_NAME = "Ali Alperen Colak"
 
