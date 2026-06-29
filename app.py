@@ -24,7 +24,7 @@ def respond(message: str, history: list[dict]):
     openai_history = list(history) + [{"role": "user", "content": message}]
 
     partial = ""
-    for chunk in chat_stream(openai_history):
+    for chunk in chat_stream(openai_history, user_message=message):
         partial += chunk
         yield partial
 

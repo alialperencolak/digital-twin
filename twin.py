@@ -7,11 +7,8 @@ import openai
 CV_PATH = Path("data/cv.md")
 QA_PATH = Path("data/qa.json")
 
-# TODO: Change this to any OpenRouter model slug you prefer.
-# See https://openrouter.ai/models for options.
-DEFAULT_MODEL = "anthropic/claude-3.5-haiku"
+DEFAULT_MODEL = "anthropic/claude-3.5-sonnet"
 
-# TODO: Replace with your real name.
 TWIN_NAME = "Ali Alperen Colak"
 
 
@@ -24,23 +21,28 @@ def _load_qa() -> list[dict]:
         return json.load(f)
 
 
-def _find_relevant_qa(question: str, qa_pairs: list[dict], top_k: int = 4) -> list[dict]:
+def _find_relevant_qa(question: str, qa_pairs: list[dict], top_k: int = 8) -> list[dict]:
     words = set(question.lower().split())
     scored = []
     for pair in qa_pairs:
-        overlap = len(words & set(pair["q"].lower().split()))
+        overlap = len(words & set((pair["q"] + " " + pair["a"]).lower().split()))
         if overlap > 0:
             scored.append((overlap, pair))
     scored.sort(key=lambda x: x[0], reverse=True)
+    # Always include all pairs if the result set is small enough
+    if len(qa_pairs) <= top_k or not scored:
+        return qa_pairs
     return [p for _, p in scored[:top_k]]
 
 
-def build_system_prompt() -> str:
+def build_system_prompt(user_message: str = "") -> str:
     cv = _load_cv()
     qa_pairs = _load_qa()
 
+    relevant = _find_relevant_qa(user_message, qa_pairs) if user_message else qa_pairs
+
     qa_block = "\n".join(
-        f"Q: {p['q']}\nA: {p['a']}" for p in qa_pairs
+        f"Q: {p['q']}\nA: {p['a']}" for p in relevant
     )
 
     return f"""You are a digital twin of {TWIN_NAME}. You speak exclusively in first person as {TWIN_NAME}.
@@ -58,7 +60,7 @@ STRICT RULES
 --- CV ---
 {cv}
 
---- COMMON Q&A ---
+--- RELEVANT Q&A ---
 {qa_block}
 """
 
@@ -73,9 +75,9 @@ def _get_client() -> openai.OpenAI:
     )
 
 
-def chat_stream(history: list[dict], model: str = DEFAULT_MODEL):
+def chat_stream(history: list[dict], user_message: str = "", model: str = DEFAULT_MODEL):
     """Yield response text chunks for streaming into Gradio."""
-    system_prompt = build_system_prompt()
+    system_prompt = build_system_prompt(user_message)
     messages = [{"role": "system", "content": system_prompt}] + history
 
     client = _get_client()
