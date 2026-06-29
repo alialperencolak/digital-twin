@@ -1,9 +1,5 @@
 # Ali Alperen Colak — CV
-<!-- ================================================================
-     TODO: Replace ALL placeholder content below with your real data.
-     This file is injected verbatim into the system prompt, so write
-     it in a natural, readable way (markdown is fine).
-     ================================================================ -->
+
 ## Contact
 - Email: colakalialperen@gmail.com
 - Phone: (+49) 159-133-5432

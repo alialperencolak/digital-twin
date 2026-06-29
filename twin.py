@@ -12,7 +12,7 @@ QA_PATH = Path("data/qa.json")
 DEFAULT_MODEL = "anthropic/claude-3.5-haiku"
 
 # TODO: Replace with your real name.
-TWIN_NAME = "[YOUR NAME]"
+TWIN_NAME = "Ali Alperen Colak"
 
 
 def _load_cv() -> str:

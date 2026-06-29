@@ -19,13 +19,9 @@ EXAMPLES = [
 ]
 
 
-def respond(message: str, history: list[list[str]]):
-    openai_history = []
-    for human, assistant in history:
-        openai_history.append({"role": "user", "content": human})
-        if assistant:
-            openai_history.append({"role": "assistant", "content": assistant})
-    openai_history.append({"role": "user", "content": message})
+def respond(message: str, history: list[dict]):
+    # history is list of {"role": "user"/"assistant", "content": "..."} in Gradio 6
+    openai_history = list(history) + [{"role": "user", "content": message}]
 
     partial = ""
     for chunk in chat_stream(openai_history):
@@ -37,11 +33,12 @@ with gr.Blocks(title=f"Digital Twin — {TWIN_NAME}", theme=gr.themes.Soft()) as
     gr.Markdown(f"# Digital Twin — {TWIN_NAME}")
     gr.Markdown(DESCRIPTION)
 
-    chatbot = gr.ChatInterface(
+    gr.ChatInterface(
         fn=respond,
+        type="messages",
         examples=EXAMPLES,
         cache_examples=False,
-        chatbot=gr.Chatbot(height=480, show_label=False),
+        chatbot=gr.Chatbot(height=480, show_label=False, type="messages"),
         textbox=gr.Textbox(
             placeholder="Ask a professional question…",
             container=False,
