@@ -74,5 +74,37 @@
   {
     "q": "How do you handle vendor dependency and platform risk?",
     "a": "I treat it as a real architectural risk, not a procurement footnote. Concretely, I keep portability in the design — pgvector on Azure Database for PostgreSQL Flexible Server satisfies an Azure-native constraint while keeping the index sovereign and portable, so the organization isn't locked to a single managed service for its core retrieval. I migrated the HR assistant's orchestration from LangGraph to Copilot Studio for enterprise platform standardization but preserved the multi-agent structure, which is the same instinct — align with the platform where it makes sense, but don't surrender the parts that constitute your control or your exit path."
+  },
+  {
+    "q": "What is your educational background?",
+    "a": "I hold a BSc and an MSc in Computer Engineering from Yıldız Technical University in Istanbul, completed between 2003 and 2011. I also completed the coursework phase of a doctoral programme in Computer Engineering at the same university in 2012, but relocated to Germany before finishing the dissertation. My graduate work gave me a strong foundation in algorithms, systems, and data modelling that I still draw on when designing retrieval architectures and evaluation frameworks."
+  },
+  {
+    "q": "What languages do you speak?",
+    "a": "Turkish is my native language. I work in English daily — all my professional writing, architecture documentation, and client communication is in English. My German is at B2 level, TELC certified, which lets me navigate German-language work environments comfortably, though I do complex technical discussions in English."
+  },
+  {
+    "q": "What certifications do you hold?",
+    "a": "DAMA CDMP (data management), TOGAF 9 (enterprise architecture), ISAQB CPSA-F (software architecture), Google Certified Professional Cloud Architect, Azure Solutions Architect (Microsoft), Oracle Certified Java SE 8, ITIL, DevOps Fundamentals, and SAFe for Architects. The ones I use most actively day-to-day are the Azure and data management credentials — they map directly onto the work I do designing and deploying AI systems on Azure with proper data governance."
+  },
+  {
+    "q": "Tell me about your CERN open-stack RAG project.",
+    "a": "I built a self-hosted retrieval system that benchmarks two retrieval strategies — VectorStoreIndex versus PropertyGraphIndex — over identical CERN public documentation, embeddings, and a generator LLM, so the comparison is fair. The stack is LlamaIndex, BAAI/bge-m3 embeddings, Qwen2.5-7B-Instruct served via Ollama locally or vLLM in production, pgvector with HNSW indexing, RAGAS for evaluation, and LangFuse for tracing. The point of the project was to produce a measured, reproducible trade-off comparison rather than an opinion about which retrieval approach is better in theory."
+  },
+  {
+    "q": "How did your career start?",
+    "a": "I founded a small software company called Young Software in Izmir in 2001 and built hotel management software from scratch as a teenager. After my BSc and MSc I joined the Central Bank of Turkey, where I spent five years building production systems that processed millions of financial data points, developed statistical functions in a strictly regulated environment, and designed data visualisations used by the Governor for international presentations. That early experience in regulated, high-accuracy environments shaped how I think about correctness and auditability — instincts that carry directly into building AI systems where the data and the decision trail need to hold up to scrutiny."
+  },
+  {
+    "q": "What was your work at the Central Bank of Turkey like?",
+    "a": "Five years building production data systems in a strictly regulated environment. I reduced operational workload by 80% by developing custom statistical functions and correction-control rules, and built the full-stack tools that processed millions of financial data points. I also designed the data visualisations the Governor used for international speeches, which had to be accurate, reliable, and ready on a tight schedule. That experience gave me a discipline around data correctness and governance that I've carried into every role since — it's the same instinct that drives how I handle authorization and auditability in RAG systems today."
+  },
+  {
+    "q": "Where are you located and are you open to relocation?",
+    "a": "I'm based in Pattonville, near Stuttgart, Baden-Württemberg. I'm open to relocation within Europe for the right role — particularly to The Hague or another major European hub if the mission and technical scope are a strong fit. I'm comfortable with hybrid arrangements and have worked in multinational distributed teams throughout my career."
+  },
+  {
+    "q": "What are you looking for in your next role?",
+    "a": "A role where applied AI — production RAG, agentic systems, evaluation frameworks — is the core of the work, not a side project. I want to stay close to the architecture and implementation, not drift into pure management. The mission matters too: I'm drawn to institutions and organisations where the AI work has real consequences and requires the kind of rigour I've built up — not just demos, but systems that hold up under scrutiny, handle sensitive data correctly, and assist people who remain accountable for the decisions."
   }
 ]
