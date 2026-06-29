@@ -1,0 +1,72 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor":       "#DBEAFE",
+    "primaryTextColor":   "#1E3A5F",
+    "primaryBorderColor": "#3B82F6",
+    "lineColor":          "#64748B",
+    "secondaryColor":     "#EEF2FF",
+    "tertiaryColor":      "#F0FDF4",
+    "background":         "#F8FAFC",
+    "fontFamily":         "Inter, system-ui, sans-serif",
+    "fontSize":           "14px",
+    "edgeLabelBackground":"#F8FAFC"
+  }
+}}%%
+
+flowchart TD
+    User(["👤 User / Recruiter"])
+
+    subgraph GitHub["📦 GitHub — alialperencolak/digital-twin"]
+        Data[("data/\ncv.md · qa.json\nsingle source of truth")]
+    end
+
+    subgraph HF["🤗 HuggingFace Space — alperencolak/digitaltwin"]
+        direction TB
+        Gradio["Gradio Chat UI\napp.py · port 7860"]
+        TwinPY["twin.py\nbuild_system_prompt(user_message)\nfindRelevantQA()  ·  top-8 keyword overlap\nchat_stream()  ·  SSE via OpenAI SDK\nFew-shot  ·  lang detect  ·  confidence signal\nHardened system prompt  ·  HF Secrets"]
+        Gradio --> TwinPY
+    end
+
+    subgraph Vercel["▲ Vercel — Next.js 15  ·  TypeScript"]
+        direction TB
+        NextUI["Chat UI  ·  page.tsx\nReactMarkdown  ·  Vercel Analytics\nNew-chat reset  ·  Copy button  ·  Loading timer"]
+
+        subgraph API["/api/chat  ·  Node.js runtime"]
+            direction TB
+            Sec["🛡 Security Layer\nRate limit: 20 req / min / IP  ·  In-memory Map\nInjection detect: 15 regex patterns\nInput sanitise: HTML strip  ·  500 char cap\nHistory re-validation  ·  API key server-side only"]
+            TwinTS["twin.ts\nbuildSystemPrompt()  ·  findRelevantQA()\nFew-shot  ·  lang detect  ·  confidence signal"]
+            Sec --> TwinTS
+        end
+
+        NextUI -->|"POST /api/chat"| Sec
+    end
+
+    OpenRouter(["☁️ OpenRouter API\nqwen/qwen3.6-plus  ·  free tier\nSSE token streaming"])
+
+    %% ── User connections ──
+    User -->|"HTTPS"| Gradio
+    User -->|"HTTPS"| NextUI
+
+    %% ── Data connections ──
+    Data -->|"read at runtime"| TwinPY
+    Data -.->|"npm prebuild: cp -r ../data ."| TwinTS
+
+    %% ── API calls ──
+    TwinPY <-->|"POST completions / SSE"| OpenRouter
+    TwinTS <-->|"POST completions / SSE"| OpenRouter
+
+    %% ── Styles ──
+    style GitHub  fill:#F0FDF4,stroke:#10B981,stroke-width:2px,stroke-dasharray:6 3,color:#064E3B
+    style HF      fill:#FFF7ED,stroke:#F97316,stroke-width:2px,stroke-dasharray:6 3,color:#7C2D12
+    style Vercel  fill:#EEF2FF,stroke:#6366F1,stroke-width:2px,stroke-dasharray:6 3,color:#312E81
+    style API     fill:#F1F5F9,stroke:#94A3B8,stroke-width:1.5px,color:#334155
+
+    style User      fill:#DBEAFE,stroke:#3B82F6,stroke-width:2px,color:#1D4ED8
+    style Data      fill:#D1FAE5,stroke:#059669,stroke-width:2px,color:#065F46
+    style Gradio    fill:#FFEDD5,stroke:#EA580C,stroke-width:1.5px,color:#7C2D12
+    style TwinPY    fill:#FEF3C7,stroke:#D97706,stroke-width:1.5px,color:#78350F
+    style NextUI    fill:#E0E7FF,stroke:#6366F1,stroke-width:1.5px,color:#312E81
+    style Sec       fill:#FEE2E2,stroke:#DC2626,stroke-width:1.5px,color:#7F1D1D
+    style TwinTS    fill:#DCFCE7,stroke:#16A34A,stroke-width:1.5px,color:#14532D
+    style OpenRouter fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#4C1D95
