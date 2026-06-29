@@ -32,18 +32,47 @@ const SKILLS = [
 const GREETING =
   "Hi — I'm Ali's digital twin. Ask me anything about his professional background, skills, experience, or career philosophy.";
 
+const INITIAL_MESSAGES: Message[] = [
+  { role: 'assistant', content: GREETING, isGreeting: true },
+];
+
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: GREETING, isGreeting: true },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [elapsedSecs, setElapsedSecs] = useState(0);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Elapsed-seconds timer while loading
+  useEffect(() => {
+    if (!isLoading) { setElapsedSecs(0); return; }
+    setElapsedSecs(0);
+    const id = setInterval(() => setElapsedSecs((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [isLoading]);
+
+  const resetConversation = () => {
+    setMessages(INITIAL_MESSAGES);
+    setInput('');
+    if (textareaRef.current) textareaRef.current.style.height = 'auto';
+  };
+
+  const copyMessage = useCallback(async (content: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch {
+      // clipboard not available (e.g. non-HTTPS)
+    }
+  }, []);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -60,9 +89,7 @@ export default function Home() {
         { role: 'assistant', content: '' },
       ]);
       setInput('');
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
-      }
+      if (textareaRef.current) textareaRef.current.style.height = 'auto';
       setIsLoading(true);
 
       try {
@@ -151,9 +178,22 @@ export default function Home() {
           <p className="text-sm font-semibold text-slate-900 leading-tight">Ali Alperen Colak</p>
           <p className="text-xs text-slate-500 leading-tight">AI Solutions Architect · MHP, A Porsche Company</p>
         </div>
-        <div className="ml-auto flex items-center gap-1.5 shrink-0">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs text-slate-500 font-medium">Online</span>
+        <div className="ml-auto flex items-center gap-3 shrink-0">
+          {/* New chat button */}
+          <button
+            onClick={resetConversation}
+            disabled={isLoading}
+            title="New conversation"
+            className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-blue-600 hover:bg-blue-50 px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <NewChatIcon />
+            <span className="hidden sm:inline">New chat</span>
+          </button>
+          {/* Online indicator */}
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-xs text-slate-500 font-medium">Online</span>
+          </span>
         </div>
       </header>
 
@@ -162,7 +202,6 @@ export default function Home() {
         {/* Sidebar */}
         <aside className="hidden lg:flex flex-col w-72 shrink-0 bg-white border-r border-slate-200 overflow-y-auto scrollbar-thin">
           <div className="p-6">
-            {/* Profile */}
             <div className="flex flex-col items-center text-center mb-6">
               <Avatar size="lg" />
               <h2 className="mt-3 text-base font-semibold text-slate-900">Ali Alperen Colak</h2>
@@ -176,15 +215,11 @@ export default function Home() {
 
             <Divider />
 
-            {/* Skills */}
             <section className="mb-6">
               <SectionLabel>Expertise</SectionLabel>
               <div className="flex flex-wrap gap-1.5 mt-2">
                 {SKILLS.map((s) => (
-                  <span
-                    key={s}
-                    className="inline-block px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md"
-                  >
+                  <span key={s} className="inline-block px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md">
                     {s}
                   </span>
                 ))}
@@ -193,7 +228,6 @@ export default function Home() {
 
             <Divider />
 
-            {/* Example questions */}
             <section>
               <SectionLabel>Ask me about</SectionLabel>
               <div className="flex flex-col gap-1 mt-2">
@@ -222,60 +256,84 @@ export default function Home() {
         <main className="flex flex-col flex-1 overflow-hidden">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto scrollbar-thin px-4 py-6 space-y-5">
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex gap-3 animate-fade-in ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
-              >
-                {msg.role === 'assistant' && (
-                  <div className="shrink-0 mt-0.5">
-                    <Avatar size="xs" />
-                  </div>
-                )}
+            {messages.map((msg, i) => {
+              const isLastAssistant = msg.role === 'assistant' && i === messages.length - 1;
+              const isStreaming = isLastAssistant && isLoading;
 
+              return (
                 <div
-                  className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-relaxed break-words ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-tr-sm shadow-sm'
-                      : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'
-                  }`}
+                  key={i}
+                  className={`flex gap-3 animate-fade-in group ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
                 >
-                  {!msg.content ? (
-                    <span className="flex items-center gap-1 py-0.5">
-                      <Dot delay={0} />
-                      <Dot delay={150} />
-                      <Dot delay={300} />
-                    </span>
-                  ) : msg.role === 'user' ? (
-                    <span className="whitespace-pre-wrap">{msg.content}</span>
-                  ) : (
-                    <ReactMarkdown
-                      components={{
-                        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                        em: ({ children }) => <em className="italic">{children}</em>,
-                        ul: ({ children }) => <ul className="list-disc ml-4 mb-2 space-y-0.5">{children}</ul>,
-                        ol: ({ children }) => <ol className="list-decimal ml-4 mb-2 space-y-0.5">{children}</ol>,
-                        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-                        code: ({ children }) => (
-                          <code className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">
-                            {children}
-                          </code>
-                        ),
-                      }}
-                    >
-                      {msg.content}
-                    </ReactMarkdown>
+                  {msg.role === 'assistant' && (
+                    <div className="shrink-0 mt-0.5">
+                      <Avatar size="xs" />
+                    </div>
                   )}
+
+                  <div className="flex flex-col gap-1 max-w-[78%]">
+                    <div
+                      className={`rounded-2xl px-4 py-3 text-sm leading-relaxed break-words ${
+                        msg.role === 'user'
+                          ? 'bg-blue-600 text-white rounded-tr-sm shadow-sm'
+                          : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'
+                      }`}
+                    >
+                      {/* Loading state */}
+                      {isStreaming && !msg.content ? (
+                        <span className="flex items-center gap-2 py-0.5 text-slate-400 text-xs">
+                          <span className="flex gap-1">
+                            <Dot delay={0} />
+                            <Dot delay={150} />
+                            <Dot delay={300} />
+                          </span>
+                          {elapsedSecs > 0 && (
+                            <span className="tabular-nums">Thinking… {elapsedSecs}s</span>
+                          )}
+                        </span>
+                      ) : msg.role === 'user' ? (
+                        <span className="whitespace-pre-wrap">{msg.content}</span>
+                      ) : (
+                        <ReactMarkdown
+                          components={{
+                            p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                            strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                            em: ({ children }) => <em className="italic">{children}</em>,
+                            ul: ({ children }) => <ul className="list-disc ml-4 mb-2 space-y-0.5">{children}</ul>,
+                            ol: ({ children }) => <ol className="list-decimal ml-4 mb-2 space-y-0.5">{children}</ol>,
+                            li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                            code: ({ children }) => (
+                              <code className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-xs font-mono">
+                                {children}
+                              </code>
+                            ),
+                          }}
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
+                      )}
+                    </div>
+
+                    {/* Copy button — assistant messages only, visible on hover */}
+                    {msg.role === 'assistant' && msg.content && !isStreaming && (
+                      <button
+                        onClick={() => copyMessage(msg.content, i)}
+                        className="self-start flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 px-1 py-0.5 rounded transition-colors opacity-0 group-hover:opacity-100"
+                        title="Copy to clipboard"
+                      >
+                        {copiedIndex === i ? <CheckIcon /> : <CopyIcon />}
+                        <span>{copiedIndex === i ? 'Copied' : 'Copy'}</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div ref={bottomRef} />
           </div>
 
           {/* Input area */}
           <div className="shrink-0 bg-white border-t border-slate-200 px-4 pt-3 pb-4">
-            {/* Mobile quick questions */}
             <div className="flex gap-2 mb-3 overflow-x-auto pb-1 lg:hidden">
               {EXAMPLES.slice(0, 3).map((q) => (
                 <button
@@ -330,13 +388,7 @@ function Avatar({ size }: { size: 'xs' | 'sm' | 'lg' }) {
   return (
     <div className={`${cls} rounded-full overflow-hidden shrink-0 ring-2 ring-white shadow-sm`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/avatar.png"
-        alt="Ali Alperen Colak"
-        width={dim}
-        height={dim}
-        className="w-full h-full object-cover"
-      />
+      <img src="/avatar.png" alt="Ali Alperen Colak" width={dim} height={dim} className="w-full h-full object-cover" />
     </div>
   );
 }
@@ -346,29 +398,19 @@ function Divider() {
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{children}</p>
-  );
+  return <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{children}</p>;
 }
 
 function Dot({ delay }: { delay: number }) {
   return (
-    <span
-      className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce"
-      style={{ animationDelay: `${delay}ms` }}
-    />
+    <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: `${delay}ms` }} />
   );
 }
 
 function LocationIcon() {
   return (
     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   );
@@ -378,6 +420,30 @@ function SendIcon() {
   return (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+    </svg>
+  );
+}
+
+function NewChatIcon() {
+  return (
+    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+    </svg>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg className="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
     </svg>
   );
 }
