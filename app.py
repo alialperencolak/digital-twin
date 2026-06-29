@@ -29,25 +29,21 @@ def respond(message: str, history: list[dict]):
         yield partial
 
 
-with gr.Blocks(title=f"Digital Twin — {TWIN_NAME}", theme=gr.themes.Soft()) as demo:
+with gr.Blocks(title=f"Digital Twin — {TWIN_NAME}") as demo:
     gr.Markdown(f"# Digital Twin — {TWIN_NAME}")
     gr.Markdown(DESCRIPTION)
 
     gr.ChatInterface(
         fn=respond,
-        type="messages",
         examples=EXAMPLES,
         cache_examples=False,
-        chatbot=gr.Chatbot(height=480, show_label=False, type="messages"),
+        chatbot=gr.Chatbot(height=480, show_label=False),
         textbox=gr.Textbox(
             placeholder="Ask a professional question…",
             container=False,
             scale=7,
+            submit_btn="Send",
         ),
-        submit_btn="Send",
-        retry_btn=None,
-        undo_btn=None,
-        clear_btn="Clear chat",
     )
 
     gr.Markdown(
@@ -56,4 +52,4 @@ with gr.Blocks(title=f"Digital Twin — {TWIN_NAME}", theme=gr.themes.Soft()) as
     )
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(theme=gr.themes.Soft())
