@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 680" width="920" height="680">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748B"/>
+    </marker>
+    <marker id="arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3B82F6"/>
+    </marker>
+    <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#F97316"/>
+    </marker>
+    <marker id="arr-i" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366F1"/>
+    </marker>
+    <marker id="arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981"/>
+    </marker>
+    <marker id="arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8B5CF6"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="920" height="680" fill="#F8FAFC"/>
+
+  <!-- ── Title ─────────────────────────────────────────────── -->
+  <text x="460" y="34" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="17" font-weight="700" fill="#0F172A">
+    Digital Twin — System Architecture
+  </text>
+  <line x1="60" y1="44" x2="860" y2="44" stroke="#E2E8F0" stroke-width="1"/>
+
+  <!-- ── User ──────────────────────────────────────────────── -->
+  <rect x="335" y="55" width="250" height="56" rx="10"
+        fill="#DBEAFE" stroke="#3B82F6" stroke-width="1.5"/>
+  <text x="460" y="78" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="13" font-weight="700" fill="#1D4ED8">User / Recruiter</text>
+  <text x="460" y="98" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" fill="#2563EB">Browser — chat interface</text>
+
+  <!-- Arrow: User → HF -->
+  <path d="M 390 111 Q 285 128 220 145" stroke="#F97316" stroke-width="1.5"
+        fill="none" marker-end="url(#arr-o)"/>
+  <text x="285" y="123" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif" font-size="9" fill="#78716C">Gradio UI</text>
+
+  <!-- Arrow: User → Vercel -->
+  <path d="M 530 111 Q 640 128 710 145" stroke="#6366F1" stroke-width="1.5"
+        fill="none" marker-end="url(#arr-i)"/>
+  <text x="650" y="123" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif" font-size="9" fill="#78716C">Next.js UI</text>
+
+  <!-- ── HuggingFace Space Zone ────────────────────────────── -->
+  <rect x="20" y="145" width="410" height="255" rx="12"
+        fill="#FFF7ED" stroke="#F97316" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <!-- Zone label pill -->
+  <rect x="38" y="135" width="188" height="22" rx="5" fill="#F97316"/>
+  <text x="132" y="150" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="11" font-weight="600" fill="white">HuggingFace Space</text>
+
+  <!-- Gradio UI sub-box -->
+  <rect x="38" y="165" width="375" height="52" rx="8"
+        fill="white" stroke="#FED7AA" stroke-width="1"/>
+  <text x="225" y="186" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="12" font-weight="600" fill="#C2410C">Gradio Chat UI — app.py</text>
+  <text x="225" y="204" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" fill="#9A3412">Port 7860 · SSR · Streaming</text>
+
+  <!-- twin.py sub-box -->
+  <rect x="38" y="228" width="375" height="155" rx="8"
+        fill="white" stroke="#FED7AA" stroke-width="1"/>
+  <text x="225" y="249" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="12" font-weight="600" fill="#C2410C">twin.py</text>
+  <line x1="55" y1="254" x2="395" y2="254" stroke="#FED7AA" stroke-width="0.75"/>
+  <text x="55" y="271" font-family="'Inter', system-ui, sans-serif" font-size="10" fill="#7C2D12">▸  build_system_prompt(user_message)</text>
+  <text x="55" y="288" font-family="'Inter', system-ui, sans-serif" font-size="10" fill="#7C2D12">▸  findRelevantQA()  —  keyword overlap, top-8</text>
+  <text x="55" y="305" font-family="'Inter', system-ui, sans-serif" font-size="10" fill="#7C2D12">▸  chat_stream()  —  OpenAI SDK → OpenRouter</text>
+  <text x="55" y="322" font-family="'Inter', system-ui, sans-serif" font-size="10" fill="#7C2D12">▸  Few-shot examples  ·  Language detection (EN / DE / TR)</text>
+  <text x="55" y="339" font-family="'Inter', system-ui, sans-serif" font-size="10" fill="#7C2D12">▸  Confidence signalling  ·  Hardened system prompt</text>
+  <text x="55" y="356" font-family="'Inter', system-ui, sans-serif" font-size="10" fill="#7C2D12">▸  OPENROUTER_API_KEY  —  HF Secrets (server-side)</text>
+  <text x="55" y="373" font-family="'Inter', system-ui, sans-serif" font-size="10" fill="#7C2D12">▸  Security rules embedded in prompt (injection resist)</text>
+
+  <!-- ── Vercel / Next.js Zone ──────────────────────────────── -->
+  <rect x="490" y="145" width="410" height="255" rx="12"
+        fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <!-- Zone label pill -->
+  <rect x="508" y="135" width="155" height="22" rx="5" fill="#6366F1"/>
+  <text x="585" y="150" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="11" font-weight="600" fill="white">Vercel (Next.js 15)</text>
+
+  <!-- Next.js UI sub-box -->
+  <rect x="508" y="165" width="375" height="52" rx="8"
+        fill="white" stroke="#C7D2FE" stroke-width="1"/>
+  <text x="695" y="186" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="12" font-weight="600" fill="#3730A3">Next.js Chat UI — page.tsx</text>
+  <text x="695" y="204" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" fill="#312E81">ReactMarkdown · Analytics · Reset · Copy · Loading timer</text>
+
+  <!-- /api/chat sub-box -->
+  <rect x="508" y="228" width="375" height="155" rx="8"
+        fill="white" stroke="#C7D2FE" stroke-width="1"/>
+  <text x="695" y="249" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="12" font-weight="600" fill="#3730A3">/api/chat  (Node.js runtime)</text>
+  <line x1="525" y1="254" x2="865" y2="254" stroke="#C7D2FE" stroke-width="0.75"/>
+
+  <!-- Security column -->
+  <rect x="520" y="260" width="170" height="110" rx="6"
+        fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
+  <text x="605" y="277" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" font-weight="700" fill="#DC2626">Security Layer</text>
+  <text x="527" y="293" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#991B1B">▸  Rate limit: 20 req / min / IP</text>
+  <text x="527" y="309" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#991B1B">▸  Injection detect (15 regex)</text>
+  <text x="527" y="325" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#991B1B">▸  Input sanitize (HTML, 500c)</text>
+  <text x="527" y="341" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#991B1B">▸  History re-validation</text>
+  <text x="527" y="357" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#991B1B">▸  API key: server-side only</text>
+
+  <!-- twin.ts column -->
+  <rect x="700" y="260" width="175" height="110" rx="6"
+        fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+  <text x="787" y="277" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" font-weight="700" fill="#15803D">twin.ts</text>
+  <text x="707" y="293" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#166534">▸  buildSystemPrompt()</text>
+  <text x="707" y="309" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#166534">▸  findRelevantQA()</text>
+  <text x="707" y="325" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#166534">▸  Few-shot examples</text>
+  <text x="707" y="341" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#166534">▸  Language detection</text>
+  <text x="707" y="357" font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#166534">▸  Confidence signalling</text>
+
+  <!-- ── Shared Data ─────────────────────────────────────────── -->
+  <!-- Arrow HF → Data -->
+  <path d="M 225 400 Q 255 418 310 422" stroke="#F97316" stroke-width="1.5"
+        fill="none" stroke-dasharray="5,3" marker-end="url(#arr-o)"/>
+  <text x="228" y="415" font-family="'Inter', system-ui, sans-serif" font-size="9" fill="#78716C">reads</text>
+
+  <!-- Arrow Vercel → Data -->
+  <path d="M 695 400 Q 670 418 615 422" stroke="#6366F1" stroke-width="1.5"
+        fill="none" stroke-dasharray="5,3" marker-end="url(#arr-i)"/>
+  <text x="700" y="415" font-family="'Inter', system-ui, sans-serif" font-size="9" fill="#78716C">prebuild copy</text>
+
+  <rect x="275" y="418" width="370" height="95" rx="12"
+        fill="#F0FDF4" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="295" y="408" width="215" height="22" rx="5" fill="#10B981"/>
+  <text x="403" y="423" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="11" font-weight="600" fill="white">Shared Data (repo root /data)</text>
+
+  <!-- cv.md -->
+  <rect x="288" y="436" width="163" height="68" rx="6"
+        fill="white" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="370" y="454" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" font-weight="600" fill="#047857">data/cv.md</text>
+  <text x="370" y="470" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="9" fill="#065F46">Markdown · 77 lines</text>
+  <text x="370" y="485" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="9" fill="#065F46">Experience · Skills · Certs</text>
+  <text x="370" y="499" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="9" fill="#065F46">Education · Projects</text>
+
+  <!-- qa.json -->
+  <rect x="461" y="436" width="175" height="68" rx="6"
+        fill="white" stroke="#6EE7B7" stroke-width="1"/>
+  <text x="548" y="454" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" font-weight="600" fill="#047857">data/qa.json</text>
+  <text x="548" y="470" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="9" fill="#065F46">27 Q&amp;A pairs · first-person</text>
+  <text x="548" y="485" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="9" fill="#065F46">Keyword retrieval · top-8</text>
+  <text x="548" y="499" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="9" fill="#065F46">Score by word overlap</text>
+
+  <!-- Arrow: Data → OpenRouter -->
+  <path d="M 460 513 L 460 543" stroke="#10B981" stroke-width="1.5"
+        fill="none" marker-end="url(#arr-g)"/>
+
+  <!-- Arrow: HF → OpenRouter (left bypass) -->
+  <path d="M 20 310 C 5 310 5 590 305 590" stroke="#F97316" stroke-width="1.2"
+        fill="none" stroke-dasharray="4,3" marker-end="url(#arr-o)"/>
+  <text x="10" y="470" font-family="'Inter', system-ui, sans-serif" font-size="9"
+        fill="#78716C" transform="rotate(-90 10 470)">API call · SSE</text>
+
+  <!-- Arrow: Vercel → OpenRouter (right bypass) -->
+  <path d="M 900 310 C 915 310 915 590 615 590" stroke="#6366F1" stroke-width="1.2"
+        fill="none" stroke-dasharray="4,3" marker-end="url(#arr-i)"/>
+  <text x="920" y="470" font-family="'Inter', system-ui, sans-serif" font-size="9"
+        fill="#78716C" transform="rotate(90 920 470)">API call · SSE</text>
+
+  <!-- ── OpenRouter ──────────────────────────────────────────── -->
+  <rect x="305" y="543" width="310" height="72" rx="12"
+        fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5"/>
+  <rect x="325" y="533" width="185" height="22" rx="5" fill="#8B5CF6"/>
+  <text x="417" y="548" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="11" font-weight="600" fill="white">OpenRouter API</text>
+  <text x="460" y="572" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="13" font-weight="700" fill="#4C1D95">qwen/qwen3.6-plus</text>
+  <text x="460" y="591" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif"
+        font-size="10" fill="#5B21B6">Free tier  ·  SSE streaming  ·  openrouter.ai</text>
+
+  <!-- ── Footer / Legend ────────────────────────────────────── -->
+  <rect x="20" y="632" width="880" height="34" rx="8" fill="#E2E8F0"/>
+  <text x="460" y="646" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif" font-size="9.5" fill="#475569" font-weight="600">
+    OPENROUTER_API_KEY is server-side only — never reaches the browser
+  </text>
+  <text x="460" y="660" text-anchor="middle"
+        font-family="'Inter', system-ui, sans-serif" font-size="9" fill="#64748B">
+    GitHub: alialperencolak/digital-twin  ·  HF: alperencolak/digitaltwin  ·  Vercel: digital-twin.vercel.app
+  </text>
+</svg>
